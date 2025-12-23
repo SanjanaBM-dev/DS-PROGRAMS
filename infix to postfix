@@ -1,0 +1,59 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<ctype.h>
+#define Max 100
+char stack[Max];
+int top=-1;
+void push(char c){
+stack[++top]=c;
+}
+char pop(){
+    return stack[top--];
+}
+int pre(char ch){
+    if(ch=='^'){
+        return 3;
+    }
+    else if(ch=='*' || ch=='/'){
+        return 2;
+    }
+    else if(ch=='+' || ch=='-'){
+        return 1;
+    }
+    else{
+        return 0;
+    }
+}
+int main(){
+    char infix[100],postfix[100],ch;
+    printf("enter the prefix expression:");
+    scanf("%s",infix);
+    push('#');
+    int i=0,k=0;
+    while((ch=infix[i++])!='\0'){
+        if(ch=='('){
+            push(ch);
+        }
+        else if(ch==')'){
+            while(stack[top]!='('){
+                postfix[k++]=pop();
+            }
+            pop();//to remove (
+        }
+        else if(isalnum(ch)){
+            postfix[k++]=ch;
+        }
+        else{
+            while(pre(stack[top])>pre(ch)){
+                postfix[k++]=pop();
+            }
+            push(ch);
+        }
+    }
+    while(stack[top]!='#'){
+        postfix[k++]=pop();
+    }
+    postfix[k]='\0';
+    printf("the postfix exp:%s",postfix);
+    return 0;
+}
